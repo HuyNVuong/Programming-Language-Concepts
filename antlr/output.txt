@@ -1,0 +1,96 @@
+Moves Section
+Beginning of Section
+Begining of List
+Number: 3
+Number: 4
+Number: 2
+Number: 2
+Number: 3
+Number: 2
+Number: 3
+Number: 1
+End of List
+End of Section
+Game Section
+Beginning of Section
+Start of Game
+Space: Empty
+Space: Empty
+Space: Empty
+Space: Empty
+Space: Empty
+End of Row
+Space: Empty
+Space: Empty
+Space: Empty
+Space: Empty
+Space: Empty
+End of Row
+Space: Empty
+Space: Empty
+Space: Empty
+Space: Empty
+Space: Empty
+End of Row
+Space: Empty
+Space: Empty
+Space: Empty
+Space: Empty
+Space: Empty
+End of Row
+Space: Empty
+Space: Empty
+Space: Empty
+Space: Empty
+Space: Empty
+End of Row
+Space: Empty
+Space: Empty
+Space: Empty
+Space: Empty
+Space: Empty
+End of Row
+Space: Empty
+Space: Empty
+Space: Empty
+Space: Empty
+Space: Empty
+End of Row
+Space: Empty
+Space: Empty
+Space: Empty
+Space: Empty
+Space: Empty
+End of Row
+Space: Empty
+Space: Empty
+Space: Empty
+Space: Empty
+Space: Empty
+End of Row
+Space: Empty
+Space: Empty
+Space: Empty
+Space: Empty
+Space: Empty
+End of Row
+Space: Empty
+Space: Empty
+Space: Empty
+Number: 1
+Space: Empty
+End of Row
+Space: Empty
+Space: Empty
+Space: Empty
+Number: 2
+Space: Empty
+End of Row
+Number: 1
+Number: 2
+Number: 2
+Number: 1
+Space: Empty
+End of Game
+End of Section
+End of File
