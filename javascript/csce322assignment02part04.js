@@ -10,7 +10,7 @@ class Point {
         this.y = y;
     }
     slopeTo(other) {
-        return Math.abs(this.x - other.x) + Math.abs(this.y - other.y);
+        return Math.abs(this.x - other.x) == Math.abs(this.y - other.y);
     }
     equals(other) {
         return (this.x == other.x && this.y == other.y);
@@ -30,12 +30,10 @@ function manyPlayersManyMoves( game ){
                 if(game[y][x] != '-') {
                     if (playerSet.has(game[y][x])) {
                         playerSet.get(game[y][x]).push(new Point(y, x));
-                        console.log(game[y][x], playerSet.get(game[y][x]));
                     } else {
                         var coorSet = new Array();
                         coorSet.push(new Point(y, x));
                         playerSet.set(game[y][x], coorSet);
-                        console.log(game[y][x], coorSet);
                     }
                 }
                 if (n < game[y][x]) {
@@ -48,19 +46,27 @@ function manyPlayersManyMoves( game ){
 
     function checkWinner(playerPlayed) {
         var playerCoorSet = playerSet.get(playerPlayed);
-        var countX = new Map();
         var countY = new Map();
         var slopeCount = new Map();
+        for (var y = 0; y < game.length; y++) {
+            var piece = -1;
+            rowCombo = 1;
+            for (var x = 0; x < game[y].length; x++) {
+                if(piece != '-') {
+                    if (piece != game[y][x]) {
+                        rowCombo = 1; 
+                    } else {
+                        rowCombo += 1;
+                    }
+                    if(rowCombo == 4) {
+                        return true;
+                    }
+                }
+                piece = game[y][x];
+            }
+        }
         for (var p = 0; p < playerCoorSet.length; p++) {
             var point = playerCoorSet[p];
-            // if (countX.has(point.x)) {
-            //     countX.set(point.x, countX.get(point.x) + 1);
-            //     if (countX.get(point.x) >= 4) {
-            //         return true;
-            //     } 
-            // } else {
-            //     countX.set(point.x, 1);
-            // }
             if (countY.has(point.y)) {
                 countY.set(point.y, countY.get(point.y) + 1);
                 if (countY.get(point.y) >= 4) {
@@ -69,21 +75,21 @@ function manyPlayersManyMoves( game ){
             } else {
                 countY.set(point.y, 1);
             }
-            // for (var op = 0; op < playerCoorSet.length; op++) {
-            //     var other = playerCoorSet[op];
-            //     if(!point.equals(other)) {
-            //         var slope = point.slopeTo(other);
-            //         if (slopeCount.has(slope)) {
-            //             if (slopeCount.get(slope) >= 4) {
-            //                 console.log('Player', playerPlayed, 'win by 4 crosses');
-            //                 return true;
-            //             }
-            //             slopeCount.set(slope, slopeCount.get(slope) + 1);
-            //         } else {
-            //             slopeCount.set(slope, 1);
-            //         }
-            //     }
-            // }
+            for (var op = 0; op < playerCoorSet.length; op++) {
+                var other = playerCoorSet[op];
+                if((!point.equals(other)) && point.slopeTo(other)) {
+                    if (slopeCount.has(point)) {
+                        slopeCount.get(point).add(other);
+                    } else {
+                        slopeToSet = new Set();
+                        slopeToSet.add(other);
+                        slopeCount.set(point, slopeToSet);
+                    }
+                    if (slopeCount.get(point).size >= 4) {
+                        return true;
+                    }
+                }
+            }
         }
         return false;
     }
@@ -99,7 +105,6 @@ function manyPlayersManyMoves( game ){
             var player = preDef.get(players[m % parseInt(n, 10)]);
             
             for(var i = 0; i < game.length; i++) {
-                // console.log(i, move - 1, game[i][move - 1]);
                 if (game[i][move - 1] != '-') {
                     game[i - 1][move - 1] = player;
                     break;
@@ -119,7 +124,6 @@ function manyPlayersManyMoves( game ){
                 break;
             }
         }
-        // console.log(playerSet);
         return game;      
     }
     return inGameMove;
