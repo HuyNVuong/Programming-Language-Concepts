@@ -61,6 +61,8 @@ function manyPlayersOneMove( game ){
                     if(rowCombo == 4) {
                         return true;
                     }
+                } else {
+                    rowCombo = 1;
                 }
                 piece = game[y][x];
             }
@@ -123,7 +125,7 @@ function manyPlayersOneMove( game ){
                 playerSet.set(player, coorSet);
             }
             seen.add(player);
-            if (seen.size == 4) {
+            if (seen.size == n) {
                 break;
             }
             if(checkWinner(player)) {

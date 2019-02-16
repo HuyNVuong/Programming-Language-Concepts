@@ -32,9 +32,9 @@ function onePlayerManyMoves( game ){
                         coorSet.push(new Point(y, x));
                         playerSet.set(game[y][x], coorSet);
                     }
-                }
-                if (n < game[y][x]) {
-                    n = game[y][x];
+                    if (n < game[y][x]) {
+                        n = game[y][x];
+                    }
                 }
             }
         }
@@ -59,6 +59,8 @@ function onePlayerManyMoves( game ){
                     if(rowCombo == 4) {
                         return true;
                     }
+                } else {
+                    rowCombo = 1;
                 }
                 piece = game[y][x];
             }
@@ -66,7 +68,7 @@ function onePlayerManyMoves( game ){
         for (var p = 0; p < playerCoorSet.length; p++) {
             var point = playerCoorSet[p];
             if (countY.has(point.y)) {
-                countY.set(point.y, countY.get(point.y) + 1);
+                countY.set(point.y, countY.get(point.y) + 1); 
                 if (countY.get(point.y) >= 4) {
                     return true;
                 } 
@@ -84,13 +86,23 @@ function onePlayerManyMoves( game ){
             for(var i = 0; i < game.length; i++) {
                 if (game[i][move - 1] != '-') {
                     game[i - 1][move - 1] = '1';
+                    break;
+                } else if (i == game.length - 1) {
+                    game[i][move - 1] = '1';
+                    break;
                 }
+            }
+            if (playerSet.has('1')) {
+                playerSet.get('1').push(new Point(i - 1, move - 1));
+            } else {
+                var coorSet = new Array();
+                coorSet.push(new Point(i - 1, move - 1));
+                playerSet.set('1', coorSet);
             }
             if(checkWinner('1')) {
                 break;
             }      
         }
-        // console.log(playerSet);
         return game;      
     }
     return inGameMove;

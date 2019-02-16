@@ -61,6 +61,8 @@ function manyPlayersManyMoves( game ){
                     if(rowCombo == 4) {
                         return true;
                     }
+                } else {
+                    rowCombo = 1;
                 }
                 piece = game[y][x];
             }

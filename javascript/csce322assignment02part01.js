@@ -10,6 +10,9 @@ function onePlayerOneMove( game ){
             if (game[i][move - 1] != '-') {
                 game[i - 1][move - 1] = '1';
                 break;
+            } else if (i == game.length - 1) {
+                game[i][move - 1] = '1';
+                break;
             }
         }
 	    return game;
