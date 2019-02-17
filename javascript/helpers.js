@@ -16,9 +16,8 @@ function readMovesFile( file )
     text = filesystem.readFileSync( file );
     rows = text.toString().split( "\n" );
     rows.pop();
-    
     moves = rows[0].split( ',' );
-
+    
     for( var m = 0; m < moves.length; m++ ){
 	mvs[m] = parseInt( moves[m] );
     }

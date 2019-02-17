@@ -10,7 +10,7 @@ class Point {
         this.y = y;
     }
     slopeTo(other) {
-        return Math.abs(this.x - other.x) == Math.abs(this.y - other.y);
+        return (this.x - other.x) == (this.y - other.y);
     }
     equals(other) {
         return (this.x == other.x && this.y == other.y);
@@ -26,10 +26,10 @@ function onePlayerManyMoves( game ){
             for (var x = 0; x < game[y].length; x++) {
                 if(game[y][x] != '-') {
                     if (playerSet.has(game[y][x])) {
-                        playerSet.get(game[y][x]).push(new Point(y, x));
+                        playerSet.get(game[y][x]).add(new Point(y, x));
                     } else {
-                        var coorSet = new Array();
-                        coorSet.push(new Point(y, x));
+                        var coorSet = new Set();
+                        coorSet.add(new Point(y, x));
                         playerSet.set(game[y][x], coorSet);
                     }
                     if (n < game[y][x]) {
@@ -93,10 +93,10 @@ function onePlayerManyMoves( game ){
                 }
             }
             if (playerSet.has('1')) {
-                playerSet.get('1').push(new Point(i - 1, move - 1));
+                playerSet.get('1').add(new Point(i - 1, move - 1));
             } else {
-                var coorSet = new Array();
-                coorSet.push(new Point(i - 1, move - 1));
+                var coorSet = new Set();
+                coorSet.add(new Point(i - 1, move - 1));
                 playerSet.set('1', coorSet);
             }
             if(checkWinner('1')) {

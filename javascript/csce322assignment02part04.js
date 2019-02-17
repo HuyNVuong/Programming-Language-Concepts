@@ -10,7 +10,7 @@ class Point {
         this.y = y;
     }
     slopeTo(other) {
-        return Math.abs(this.x - other.x) == Math.abs(this.y - other.y);
+        return (this.x - other.x) == (this.y - other.y);
     }
     equals(other) {
         return (this.x == other.x && this.y == other.y);
@@ -29,10 +29,10 @@ function manyPlayersManyMoves( game ){
             for (var x = 0; x < game[y].length; x++) {
                 if(game[y][x] != '-') {
                     if (playerSet.has(game[y][x])) {
-                        playerSet.get(game[y][x]).push(new Point(y, x));
+                        playerSet.get(game[y][x]).add(new Point(y, x));
                     } else {
-                        var coorSet = new Array();
-                        coorSet.push(new Point(y, x));
+                        var coorSet = new Set();
+                        coorSet.add(new Point(y, x));
                         playerSet.set(game[y][x], coorSet);
                     }
                 }
@@ -72,6 +72,7 @@ function manyPlayersManyMoves( game ){
             if (countY.has(point.y)) {
                 countY.set(point.y, countY.get(point.y) + 1);
                 if (countY.get(point.y) >= 4) {
+                    console.log('win by col');
                     return true;
                 } 
             } else {
@@ -79,7 +80,7 @@ function manyPlayersManyMoves( game ){
             }
             for (var op = 0; op < playerCoorSet.length; op++) {
                 var other = playerCoorSet[op];
-                if((!point.equals(other)) && point.slopeTo(other)) {
+                if(point.slopeTo(other)) {
                     if (slopeCount.has(point)) {
                         slopeCount.get(point).add(other);
                     } else {
@@ -116,10 +117,10 @@ function manyPlayersManyMoves( game ){
                 }
             }
             if (playerSet.has(player)) {
-                playerSet.get(player).push(new Point(i - 1, move - 1));
+                playerSet.get(player).add(new Point(i - 1, move - 1));
             } else {
-                var coorSet = new Array();
-                coorSet.push(new Point(i - 1, move - 1));
+                var coorSet = new Set();
+                coorSet.add(new Point(i - 1, move - 1));
                 playerSet.set(player, coorSet);
             }
             if(checkWinner(player)) {
