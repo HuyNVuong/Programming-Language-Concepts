@@ -46,19 +46,25 @@ function manyPlayersOneMove( game ){
 
     function checkWinner(playerPlayed) {
         var playerCoorSet = playerSet.get(playerPlayed);
-        var countY = new Map();
         var slopeCount = new Map();
+        var rowCombo = 0;
         for (var y = 0; y < game.length; y++) {
             var piece = -1;
             rowCombo = 1;
+            colCombo = 1;
             for (var x = 0; x < game[y].length; x++) {
                 if(piece != '-') {
+                    if (piece != game[x][y]) {
+                        colCombo = 1;
+                    } else {
+                        colCombo += 1;
+                    } 
                     if (piece != game[y][x]) {
                         rowCombo = 1; 
                     } else {
                         rowCombo += 1;
                     }
-                    if(rowCombo == 4) {
+                    if(rowCombo == 4 || colCombo == 4) {
                         return true;
                     }
                 } else {
@@ -67,19 +73,9 @@ function manyPlayersOneMove( game ){
                 piece = game[y][x];
             }
         }
-        for (var p = 0; p < playerCoorSet.length; p++) {
-            var point = playerCoorSet[p];
-            if (countY.has(point.y)) {
-                countY.set(point.y, countY.get(point.y) + 1);
-                if (countY.get(point.y) >= 4) {
-                    return true;
-                } 
-            } else {
-                countY.set(point.y, 1);
-            }
-            for (var op = 0; op < playerCoorSet.length; op++) {
-                var other = playerCoorSet[op];
-                if(!point.equals(other) && point.slopeTo(other)) {
+        for (var point of playerCoorSet) {
+            for (var other of playerCoorSet) {
+                if(point.slopeTo(other)) {
                     if (slopeCount.has(point)) {
                         slopeCount.get(point).add(other);
                     } else {
@@ -88,6 +84,7 @@ function manyPlayersOneMove( game ){
                         slopeCount.set(point, slopeToSet);
                     }
                     if (slopeCount.get(point).size >= 4) {
+                        console.log(slopeCount);
                         return true;
                     }
                 }

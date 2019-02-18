@@ -26,10 +26,10 @@ function onePlayerManyMoves( game ){
             for (var x = 0; x < game[y].length; x++) {
                 if(game[y][x] != '-') {
                     if (playerSet.has(game[y][x])) {
-                        playerSet.get(game[y][x]).add(new Point(y, x));
+                        playerSet.get(game[y][x]).push(new Point(y, x));
                     } else {
-                        var coorSet = new Set();
-                        coorSet.add(new Point(y, x));
+                        var coorSet = new Array();
+                        coorSet.push(new Point(y, x));
                         playerSet.set(game[y][x], coorSet);
                     }
                     if (n < game[y][x]) {
@@ -43,15 +43,15 @@ function onePlayerManyMoves( game ){
 
     function checkWinner(playerPlayed) {
         var playerCoorSet = playerSet.get(playerPlayed);
-        var countY = new Map();
         var slopeCount = new Map();
+        var countY = new Map();
         var rowCombo = 0;
         for (var y = 0; y < game.length; y++) {
-            var piece = -1;
+            var rowPiece = -1;
             rowCombo = 1;
             for (var x = 0; x < game[y].length; x++) {
-                if(piece != '-') {
-                    if (piece != game[y][x]) {
+                if(rowPiece != '-') {
+                    if (rowPiece != game[y][x]) {
                         rowCombo = 1; 
                     } else {
                         rowCombo += 1;
@@ -62,18 +62,50 @@ function onePlayerManyMoves( game ){
                 } else {
                     rowCombo = 1;
                 }
-                piece = game[y][x];
+                rowPiece = game[y][x];
             }
         }
-        for (var p = 0; p < playerCoorSet.length; p++) {
-            var point = playerCoorSet[p];
+        for (var point of playerCoorSet) {
             if (countY.has(point.y)) {
-                countY.set(point.y, countY.get(point.y) + 1); 
-                if (countY.get(point.y) >= 4) {
-                    return true;
-                } 
+                countY.get(point.y).push(point);
+                if (countY.get(point.y).length >= 4) {
+                    var coorOrderedByX = countY.get(point.y).sort((p1, p2) => (p1.x > p2.x) ? 1 : -1);
+                    // console.log(coorOrderedByX);
+                    var currX = coorOrderedByX[0].x;
+                    var combo = 1;
+                    for (var i = 1; i < coorOrderedByX.length; i++) {
+                        // console.log(currX, combo);
+                        if (currX == coorOrderedByX[i].x - 1) {
+                            
+                            combo += 1;
+                            if (combo == 4) {
+                                return true;
+                            }
+                        } else {
+                            combo = 1;
+                        }
+                        currX = coorOrderedByX[i].x;
+                    }
+                }
             } else {
-                countY.set(point.y, 1);
+                var ySet = new Array();
+                ySet.push(point);
+                countY.set(point.y, ySet);
+            }
+            for (var other of playerCoorSet) {
+                if(point.slopeTo(other)) {
+                    if (slopeCount.has(point)) {
+                        slopeCount.get(point).add(other);
+                    } else {
+                        slopeToSet = new Set();
+                        slopeToSet.add(other);
+                        slopeCount.set(point, slopeToSet);
+                    }
+                    if (slopeCount.get(point).size >= 4) {
+                        // console.log(slopeCount);
+                        return true;
+                    }
+                }
             }
         }
         return false;
@@ -89,14 +121,13 @@ function onePlayerManyMoves( game ){
                     break;
                 } else if (i == game.length - 1) {
                     game[i][move - 1] = '1';
-                    break;
                 }
             }
             if (playerSet.has('1')) {
-                playerSet.get('1').add(new Point(i - 1, move - 1));
+                playerSet.get('1').push(new Point(i - 1, move - 1));
             } else {
-                var coorSet = new Set();
-                coorSet.add(new Point(i - 1, move - 1));
+                var coorSet = new Array();
+                coorSet.push(new Point(i - 1, move - 1));
                 playerSet.set('1', coorSet);
             }
             if(checkWinner('1')) {

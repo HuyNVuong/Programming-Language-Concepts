@@ -46,8 +46,9 @@ function manyPlayersManyMoves( game ){
 
     function checkWinner(playerPlayed) {
         var playerCoorSet = playerSet.get(playerPlayed);
-        var countY = new Map();
         var slopeCount = new Map();
+	    var countY = new Map();
+        
         for (var y = 0; y < game.length; y++) {
             var piece = -1;
             rowCombo = 1;
@@ -67,19 +68,34 @@ function manyPlayersManyMoves( game ){
                 piece = game[y][x];
             }
         }
-        for (var p = 0; p < playerCoorSet.length; p++) {
-            var point = playerCoorSet[p];
+        for (var point of playerCoorSet) {
             if (countY.has(point.y)) {
-                countY.set(point.y, countY.get(point.y) + 1);
-                if (countY.get(point.y) >= 4) {
-                    console.log('win by col');
-                    return true;
-                } 
+                countY.get(point.y).push(point);
+                if (countY.get(point.y).length >= 4) {
+                    var coorOrderedByX = countY.get(point.y).sort((p1, p2) => (p1.x > p2.x) ? 1 : -1);
+                    // console.log(coorOrderedByX);
+                    var currX = coorOrderedByX[0].x;
+                    var combo = 1;
+                    for (var i = 1; i < coorOrderedByX.length; i++) {
+                        // console.log(currX, combo);
+                        if (currX == coorOrderedByX[i].x - 1) {
+                            
+                            combo += 1;
+                            if (combo == 4) {
+                                return true;
+                            }
+                        } else {
+                            combo = 1;
+                        }
+                        currX = coorOrderedByX[i].x;
+                    }
+                }
             } else {
-                countY.set(point.y, 1);
+                var ySet = new Array();
+                ySet.push(point);
+                countY.set(point.y, ySet);
             }
-            for (var op = 0; op < playerCoorSet.length; op++) {
-                var other = playerCoorSet[op];
+            for (var other of playerCoorSet) {
                 if(point.slopeTo(other)) {
                     if (slopeCount.has(point)) {
                         slopeCount.get(point).add(other);
@@ -89,6 +105,7 @@ function manyPlayersManyMoves( game ){
                         slopeCount.set(point, slopeToSet);
                     }
                     if (slopeCount.get(point).size >= 4) {
+                        // console.log(slopeCount);
                         return true;
                     }
                 }
@@ -113,7 +130,6 @@ function manyPlayersManyMoves( game ){
                     break;
                 } else if (i == game.length - 1) {
                     game[i][move - 1] = player;
-                    break;
                 }
             }
             if (playerSet.has(player)) {
@@ -124,6 +140,7 @@ function manyPlayersManyMoves( game ){
                 playerSet.set(player, coorSet);
             }
             if(checkWinner(player)) {
+                // console.log('someone wins');
                 break;
             }
         }
