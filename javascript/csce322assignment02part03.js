@@ -45,47 +45,42 @@ function manyPlayersOneMove( game ){
     };
 
     function checkWinner(playerPlayed) {
-        var playerCoorSet = playerSet.get(playerPlayed);
-        var slopeCount = new Map();
-        var rowCombo = 0;
         for (var y = 0; y < game.length; y++) {
-            var piece = -1;
-            rowCombo = 1;
-            colCombo = 1;
-            for (var x = 0; x < game[y].length; x++) {
-                if(piece != '-') {
-                    if (piece != game[x][y]) {
-                        colCombo = 1;
-                    } else {
-                        colCombo += 1;
-                    } 
-                    if (piece != game[y][x]) {
-                        rowCombo = 1; 
-                    } else {
-                        rowCombo += 1;
-                    }
-                    if(rowCombo == 4 || colCombo == 4) {
-                        return true;
-                    }
-                } else {
-                    rowCombo = 1;
+            for (var x = 0; x < game[y].length - 3; x++) {
+                if (game[y][x] != '-') {
+                    if (game[y][x] == playerPlayed && game[y][x + 1] == playerPlayed
+                            && game[y][x + 2] == playerPlayed && game[y][x + 3] == playerPlayed) {
+                                return true;
+                            }
                 }
-                piece = game[y][x];
             }
         }
-        for (var point of playerCoorSet) {
-            for (var other of playerCoorSet) {
-                if(point.slopeTo(other)) {
-                    if (slopeCount.has(point)) {
-                        slopeCount.get(point).add(other);
-                    } else {
-                        slopeToSet = new Set();
-                        slopeToSet.add(other);
-                        slopeCount.set(point, slopeToSet);
+        
+        for (var y = 0; y < game.length - 3; y++) {
+            for (var x = 0; x < game[y].length; x++) {
+                if (game[y][x] != '-') {
+                    if (game[y][x] == playerPlayed && game[y + 1][x] == playerPlayed
+                            && game[y + 2][x] == playerPlayed && game[y + 3][x] == playerPlayed) {
+                                return true;
+                            }
+                }
+            }
+        }
+
+        for (var y = 0; y < game.length - 3; y++) {
+            for (var x = 0; x < game[0].length; x++) {
+                if (game[y][x] != '-') {
+                    if (x < game[0].length - 3) {
+                        if (game[y][x] == playerPlayed && game[y + 1][x + 1] == playerPlayed 
+                            && game[y + 2][x + 2] == playerPlayed && game[y + 3][x + 3] == playerPlayed) {
+                                return true;
+                        }
                     }
-                    if (slopeCount.get(point).size >= 4) {
-                        console.log(slopeCount);
-                        return true;
+                    if (x >= 3) {
+                        if (game[y][x] == playerPlayed && game[y + 1][x - 1] == playerPlayed 
+                            && game[y + 2][x - 2] == playerPlayed && game[y + 3][x - 3] == playerPlayed) {
+                                return true;
+                            }
                     }
                 }
             }

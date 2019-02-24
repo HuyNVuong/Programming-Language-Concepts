@@ -10,7 +10,7 @@ class Point {
         this.y = y;
     }
     slopeTo(other) {
-        return (this.x - other.x) == (this.y - other.y);
+        return ((this.x - other.x) == (this.y - other.y));
     }
     equals(other) {
         return (this.x == other.x && this.y == other.y);
@@ -26,113 +26,96 @@ function onePlayerManyMoves( game ){
             for (var x = 0; x < game[y].length; x++) {
                 if(game[y][x] != '-') {
                     if (playerSet.has(game[y][x])) {
-                        playerSet.get(game[y][x]).push(new Point(y, x));
+                        playerSet.get(game[y][x]).add(new Point(x, y));
                     } else {
-                        var coorSet = new Array();
-                        coorSet.push(new Point(y, x));
+                        var coorSet = new Set();
+                        coorSet.add(new Point(x, y));
                         playerSet.set(game[y][x], coorSet);
                     }
-                    if (n < game[y][x]) {
-                        n = game[y][x];
-                    }
+                }
+                if (n < game[y][x]) {
+                    n = game[y][x];
                 }
             }
         }
         return;
-    };
+    }
 
     function checkWinner(playerPlayed) {
-        var playerCoorSet = playerSet.get(playerPlayed);
-        var slopeCount = new Map();
-        var countY = new Map();
-        var rowCombo = 0;
         for (var y = 0; y < game.length; y++) {
-            var rowPiece = -1;
-            rowCombo = 1;
-            for (var x = 0; x < game[y].length; x++) {
-                if(rowPiece != '-') {
-                    if (rowPiece != game[y][x]) {
-                        rowCombo = 1; 
-                    } else {
-                        rowCombo += 1;
-                    }
-                    if(rowCombo == 4) {
-                        return true;
-                    }
-                } else {
-                    rowCombo = 1;
-                }
-                rowPiece = game[y][x];
-            }
-        }
-        for (var point of playerCoorSet) {
-            if (countY.has(point.y)) {
-                countY.get(point.y).push(point);
-                if (countY.get(point.y).length >= 4) {
-                    var coorOrderedByX = countY.get(point.y).sort((p1, p2) => (p1.x > p2.x) ? 1 : -1);
-                    // console.log(coorOrderedByX);
-                    var currX = coorOrderedByX[0].x;
-                    var combo = 1;
-                    for (var i = 1; i < coorOrderedByX.length; i++) {
-                        // console.log(currX, combo);
-                        if (currX == coorOrderedByX[i].x - 1) {
-                            
-                            combo += 1;
-                            if (combo == 4) {
+            for (var x = 0; x < game[y].length - 3; x++) {
+                if (game[y][x] != '-') {
+                    if (game[y][x] == playerPlayed && game[y][x + 1] == playerPlayed
+                            && game[y][x + 2] == playerPlayed && game[y][x + 3] == playerPlayed) {
                                 return true;
                             }
-                        } else {
-                            combo = 1;
-                        }
-                        currX = coorOrderedByX[i].x;
-                    }
                 }
-            } else {
-                var ySet = new Array();
-                ySet.push(point);
-                countY.set(point.y, ySet);
             }
-            for (var other of playerCoorSet) {
-                if(point.slopeTo(other)) {
-                    if (slopeCount.has(point)) {
-                        slopeCount.get(point).add(other);
-                    } else {
-                        slopeToSet = new Set();
-                        slopeToSet.add(other);
-                        slopeCount.set(point, slopeToSet);
+        }
+
+        for (var y = 0; y < game.length - 3; y++) {
+            for (var x = 0; x < game[y].length; x++) {
+                if (game[y][x] != '-') {
+                    if (game[y][x] == playerPlayed && game[y + 1][x] == playerPlayed
+                            && game[y + 2][x] == playerPlayed && game[y + 3][x] == playerPlayed) {
+                                return true;
+                            }
+                }
+            }
+        }
+
+        for (var y = 0; y < game.length - 3; y++) {
+            for (var x = 0; x < game[0].length; x++) {
+                if (game[y][x] != '-') {
+                    if (x < game[0].length - 3) {
+                        if (game[y][x] == playerPlayed && game[y + 1][x + 1] == playerPlayed 
+                            && game[y + 2][x + 2] == playerPlayed && game[y + 3][x + 3] == playerPlayed) {
+                                return true;
+                        }
                     }
-                    if (slopeCount.get(point).size >= 4) {
-                        // console.log(slopeCount);
-                        return true;
+                    if (x >= 3) {
+                        if (game[y][x] == playerPlayed && game[y + 1][x - 1] == playerPlayed 
+                            && game[y + 2][x - 2] == playerPlayed && game[y + 3][x - 3] == playerPlayed) {
+                                return true;
+                            }
                     }
                 }
             }
         }
+
         return false;
     }
 
     function inGameMove( moves ) {
         preprocess(game);
+        var players = new Array(n);
+        for (var p = 1; p <= n; p++) {
+            players[p - 1] = p;
+        }
         for (var m = 0; m < moves.length; m++) {
+            // console.log(playerSet);
             var move = moves[m];
+            var player = '1';
+            
             for(var i = 0; i < game.length; i++) {
                 if (game[i][move - 1] != '-') {
-                    game[i - 1][move - 1] = '1';
+                    game[i - 1][move - 1] = player;
                     break;
                 } else if (i == game.length - 1) {
-                    game[i][move - 1] = '1';
+                    game[i][move - 1] = player;
                 }
             }
-            if (playerSet.has('1')) {
-                playerSet.get('1').push(new Point(i - 1, move - 1));
+            if (playerSet.has(player)) {
+                playerSet.get(player).add(new Point(move - 1, i - 1));
             } else {
-                var coorSet = new Array();
-                coorSet.push(new Point(i - 1, move - 1));
-                playerSet.set('1', coorSet);
+                var coorSet = new Set();
+                coorSet.add(new Point(move - 1, i - 1));
+                playerSet.set(player, coorSet);
             }
-            if(checkWinner('1')) {
+            if(checkWinner(player)) {
+                // console.log('someone wins');
                 break;
-            }      
+            }
         }
         return game;      
     }
