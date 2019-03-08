@@ -13,5 +13,18 @@ main = do
     printGame result
 
 -- YOUR CODE SHOULD COME AFTER THIS POINT
+getElement :: [Char] -> Int -> Char 
+getElement (el:els) 0 = el 
+getElement (el:els) n = getElement els (n - 1)
+
+getCol :: [[Char]] -> Int -> [Char]
+getCol [row] col = [(getElement row col)]
+getCol (row:rows) col = (getElement row col):(getCol rows col)
+
 onePlayerOneMove :: [[Char]] -> Int -> [[Char]]
 onePlayerOneMove game move = game
+    where colToPlay = getCol game (move - 1)
+            where pointToPlay = case i of
+                '-' ->  '1'
+        
+    

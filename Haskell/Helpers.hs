@@ -8,12 +8,12 @@ import Data.Char
 import Data.List
 import Debug.Trace
 
-readConnectFourFile :: String -> IO ([[Char]],[Int])
-readConnectFourFile = readIO
+readConnectFourFile :: String -> IO ([[Char]], [Int])
+readConnectFourFile = readIO 
 
-printGame :: [[Char]] -> IO ()
-printGame [] = do
+printGame :: [[Char]] -> IO () 
+printGame [] = do 
 	print ""
-printGame (row:rows) = do
+printGame (row:rows) = do	
 	print row
 	printGame rows
