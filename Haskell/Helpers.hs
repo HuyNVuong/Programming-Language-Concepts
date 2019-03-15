@@ -1,7 +1,7 @@
 module Helpers
 ( readConnectFourFile
 , printGame
-, onePlayerHelper
+, oneMoveHelper
 , putPieceToGame
 ) where
 
@@ -26,8 +26,8 @@ printGame (row:rows) = do
 -- Code, Logic implementation to play the connect Four in variations -------
 ----------------------------------------------------------------------------
 
-onePlayerHelper :: [[Char]] -> Char -> Int -> [[Char]]
-onePlayerHelper game player move 
+oneMoveHelper :: [[Char]] -> Char -> Int -> [[Char]]
+oneMoveHelper game player move 
     | isEmptyPlace colToPlay move == True	= putPieceToGame game player row col
     | otherwise								= putPieceToGame game player row col
     where 

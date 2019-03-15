@@ -17,6 +17,5 @@ main = do
 
 -- YOUR CODE SHOULD COME AFTER THIS POINT
 
-
 onePlayerOneMove :: [[Char]] -> Int -> [[Char]]
-onePlayerOneMove game move = onePlayerHelper game '1' (move - 1)
+onePlayerOneMove game move = oneMoveHelper game '1' (move - 1)
