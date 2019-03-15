@@ -60,10 +60,6 @@ getElementInMatrix (row:rows) y x
     | y == 1	= getElement row x 
     | otherwise = getElementInMatrix rows (y - 1) x
 
-reverseList :: [[Char]] -> [[Char]] 
-reverseList []      = []
-reverseList (x:xs)  = (reverseList xs) ++ [x]
-
 getNextMove :: [Int] -> Int 
 getNextMove (h:t)	= h 
 
