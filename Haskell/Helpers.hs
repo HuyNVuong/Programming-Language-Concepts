@@ -23,21 +23,29 @@ printGame (row:rows) = do
 
 
 ----------------------------------------------------------------------------
--- Code, Logic implementation to play the connect Four in variations -------
+---- Code, Logic implementation to play the connect Four in variations -----
 ----------------------------------------------------------------------------
 
 oneMoveHelper :: [[Char]] -> Char -> Int -> [[Char]]
-oneMoveHelper game player move 
-    | isEmptyPlace colToPlay move == True	= putPieceToGame game player row col
-    | otherwise								= putPieceToGame game player row col
+oneMoveHelper game player move = putPieceToGame game player row col
     where 
         colToPlay		= getCol game move
         row 			= findPlaceToMove colToPlay (length colToPlay)
-        col				= move					
+        col				= move		
+        
+manyMoveHelper :: [[Char]] -> Char -> [Int] -> [[Char]]
+manyMoveHelper game _ [] = game 
+manyMoveHelper game player moves = manyMoveHelper nextGame player moves 
+    where 
+        nextGame        = putPieceToGame game player row col 
+        (move, moves)   = getNextMove moves 
+        col             = move
+        row             = findPlaceToMove colToPlay col  
+        colToPlay       = getCol game col 
 
 manyPlayerHelper :: [[Char]] -> Char -> [Int] -> [[Char]]
 manyPlayerHelper game player moves 
-    | everyOnePlayed nextPlayer numPlayer == False   = manyPlayerHelper nextGame nextPlayer nextMove
+    | everyOnePlayed nextPlayer numPlayer == False   = manyPlayerHelper nextGame nextPlayer moves
     | otherwise                                      = oneMoveHelper game nextPlayer nextMove 
     where 
         player     = '1'
@@ -65,7 +73,7 @@ putPieceToGame game player y x = take y game
 isEmptyPlace :: [Char] -> Int -> Bool 
 isEmptyPlace colToPlay row  
     | getElement colToPlay row == '-'	= True 
-    | otherwise							= True 
+    | otherwise							= False 
 
 getElementInMatrix :: [[Char]] -> Int -> Int -> Char 
 getElementInMatrix (row:rows) y x 
