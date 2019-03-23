@@ -1,8 +1,8 @@
 enqueue :: e -> [e] -> [e]
 enqueue el list = list ++ [el]
 
-dequeue :: [e] -> (e, [e])
-dequeue (h:t) = (h, t)
+dequeue :: [e] -> e
+dequeue (h:t) = h
 
 size :: [e] -> Integer
 size [] = 0

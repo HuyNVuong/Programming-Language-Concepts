@@ -3,6 +3,8 @@ module Helpers
 , printGame
 , oneMoveHelper
 , putPieceToGame
+, manyMoveHelper
+, checkFour
 ) where
 
 import Prelude
@@ -26,34 +28,21 @@ printGame (row:rows) = do
 ---- Code, Logic implementation to play the connect Four in variations -----
 ----------------------------------------------------------------------------
 
+checkFour :: [[Char]] -> Bool 
+checkFour []            = False
+
 oneMoveHelper :: [[Char]] -> Char -> Int -> [[Char]]
 oneMoveHelper game player move = putPieceToGame game player row col
     where 
-        colToPlay		= getCol game move
+        colToPlay		= getCol game (move + 1)
         row 			= findPlaceToMove colToPlay (length colToPlay)
-        col				= move		
+        col				= move
         
 manyMoveHelper :: [[Char]] -> Char -> [Int] -> [[Char]]
-manyMoveHelper game _ [] = game 
-manyMoveHelper game player moves = manyMoveHelper nextGame player moves 
+manyMoveHelper game _ [] = game
+manyMoveHelper game player (move:moves) = manyMoveHelper newGame player moves 
     where 
-        nextGame        = putPieceToGame game player row col 
-        (move, moves)   = getNextMove moves 
-        col             = move
-        row             = findPlaceToMove colToPlay col  
-        colToPlay       = getCol game col 
-
-manyPlayerHelper :: [[Char]] -> Char -> [Int] -> [[Char]]
-manyPlayerHelper game player moves 
-    | everyOnePlayed nextPlayer numPlayer == False   = manyPlayerHelper nextGame nextPlayer moves
-    | otherwise                                      = oneMoveHelper game nextPlayer nextMove 
-    where 
-        player     = '1'
-        nextPlayer = '2'
-        (nextMove, moves)   = getNextMove moves 
-        numPlayer   = findNumPlayer game 
-        nextGame    = oneMoveHelper game nextPlayer nextMove
-
+        newGame         = oneMoveHelper game player (move - 1) 
 
 getRow :: [[Char]] -> Int -> [Char]
 getRow (row:rows) 0     = row 
@@ -80,8 +69,11 @@ getElementInMatrix (row:rows) y x
     | y == 1	= getElement row x 
     | otherwise = getElementInMatrix rows (y - 1) x
 
-getNextMove :: [Int] -> (Int, [Int]) 
-getNextMove (h:t)	= (h, t)
+getNextMove :: [Int] -> Int 
+getNextMove (h:t)	= h 
+
+dequeue :: [Int] -> [Int] 
+dequeue (h:t)       = t 
 
 getElement :: [Char] -> Int -> Char 
 getElement (el:els) 1	= el
