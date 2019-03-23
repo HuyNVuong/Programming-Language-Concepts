@@ -4,6 +4,8 @@ module Helpers
 , oneMoveHelper
 , putPieceToGame
 , manyMoveHelper
+, manyPlayersOneMoveHelper
+, manyPlayersHelper
 , checkFour
 ) where
 
@@ -35,7 +37,7 @@ checkFour (row:rows)
           | otherwise                    = checkFour rows
 
 checkFourRow :: [Char] -> Bool 
-checkFourRow [ _ , _ , _ ]             = False
+checkFourRow [ _ , _ , _ ]               = False
 checkFourRow (p1:p2:p3:p4:t)
              | p1 == p2 && p1 == p3 && p1 == p4  && p1 /= '-' = True 
              | otherwise                                      = checkFourRow (p2:p3:p4:t)
@@ -51,20 +53,51 @@ manyMoveHelper :: [[Char]] -> Char -> [Int] -> [[Char]]
 manyMoveHelper game _ [] = game
 manyMoveHelper game player (move:moves) 
               | checkFour game == True      = game 
+              | checkFour tGame == True     = game 
               | otherwise                   = manyMoveHelper newGame player moves 
-              where 
-                    newGame                 = oneMoveHelper game player move
+                where 
+                    newGame                 = oneMoveHelper game player (move - 1)
+                    tGame                   = transpose game
+
+manyPlayersOneMoveHelper :: [[Char]] -> Char -> [Int] -> [[Char]]
+manyPlayersOneMoveHelper game _ [] = game 
+manyPlayersOneMoveHelper game player (move:moves) 
+                       | checkFour game == True        = game 
+                       | checkFour tGame == True       = game 
+                       | charToInt player == numPlayer = oneMoveHelper game player (move - 1)
+                       | otherwise                     = manyPlayersOneMoveHelper newGame nextPlayer moves 
+                         where 
+                             newGame                   = oneMoveHelper game player (move - 1)
+                             tGame                     = transpose game
+                             nextPlayer                = findNextPlayer player numPlayer
+                             numPlayer                 = findNumPlayer game
+                             
+manyPlayersHelper :: [[Char]] -> Char -> [Int] -> [[Char]]
+manyPlayersHelper game _ [] = game 
+manyPlayersHelper game player (move:moves) 
+                | checkFour game == True        = game 
+                | checkFour tGame == True       = game 
+                | otherwise                     = manyPlayersHelper newGame nextPlayer moves 
+                  where 
+                      newGame                   = oneMoveHelper game player (move - 1)
+                      tGame                     = transpose game
+                      nextPlayer                = findNextPlayer player numPlayer
+                      numPlayer                 = findNumPlayer game
+
 
 getRow :: [[Char]] -> Int -> [Char]
 getRow (row:rows) 0     = row 
 getRow (row:rows) n     = getRow rows (n - 1)
 
 findPlaceToMove :: [Char] -> Int -> Int 
+findPlaceToMove row 0               = -1
 findPlaceToMove row n
 	| isEmptyPlace row n == True	= n - 1
 	| otherwise						= findPlaceToMove row (n - 1)
 
 putPieceToGame :: [[Char]] -> Char -> Int -> Int -> [[Char]]
+putPieceToGame game player (-1) _ = game 
+putPieceToGame game player _ (-1) = game
 putPieceToGame [] _ _ _ = []
 putPieceToGame game player y x = take y game 
     ++ [take x (game !! y) ++ [player] ++ drop (x + 1) (game !! y)] 
@@ -75,17 +108,6 @@ isEmptyPlace colToPlay row
     | getElement colToPlay row == '-'	= True 
     | otherwise							= False 
 
-getElementInMatrix :: [[Char]] -> Int -> Int -> Char 
-getElementInMatrix (row:rows) y x 
-    | y == 1	= getElement row x 
-    | otherwise = getElementInMatrix rows (y - 1) x
-
-getNextMove :: [Int] -> Int 
-getNextMove (h:t)	= h 
-
-dequeue :: [Int] -> [Int] 
-dequeue (h:t)       = t 
-
 getElement :: [Char] -> Int -> Char 
 getElement (el:els) 1	= el
 getElement (el:els) n 	= getElement (els) (n - 1)
@@ -95,8 +117,9 @@ getCol [row] col		= [(getElement row col)]
 getCol (row:rows) col 	= (getElement row col):(getCol rows col)
 
 findNextPlayer :: Char -> Int -> Char
-findNextPlayer player numPlayer = 
-    intToChar (((charToInt player) + 1) `mod` (numPlayer + 1))
+findNextPlayer player numPlayer 
+             | (charToInt player) == numPlayer = '1' 
+             | otherwise                       = intToChar ((charToInt player) + 1)
 
 findNumPlayer :: [[Char]] -> Int
 findNumPlayer [row]     = maxFromList row 

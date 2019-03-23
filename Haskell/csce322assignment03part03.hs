@@ -14,4 +14,4 @@ main = do
 
 -- YOUR CODE SHOULD COME AFTER THIS POINT
 manyPlayersOneMove :: [[Char]] -> [Int] -> [[Char]]
-manyPlayersOneMove game moves = game
+manyPlayersOneMove game moves = manyPlayersOneMoveHelper game '1' moves 
