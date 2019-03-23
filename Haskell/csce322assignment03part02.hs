@@ -14,6 +14,4 @@ main = do
 
 -- YOUR CODE SHOULD COME AFTER THIS POINT
 onePlayerManyMoves :: [[Char]] -> [Int] -> [[Char]]
-onePlayerManyMoves game moves 
-    | checkFour game == True     = game 
-    | checkFour game == False    = manyMoveHelper game '1' moves     
+onePlayerManyMoves game moves = manyMoveHelper game '1' moves

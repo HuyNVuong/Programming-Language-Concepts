@@ -29,7 +29,16 @@ printGame (row:rows) = do
 ----------------------------------------------------------------------------
 
 checkFour :: [[Char]] -> Bool 
-checkFour []            = False
+checkFour [row]                          = checkFourRow row
+checkFour (row:rows)
+          | checkFourRow row == True     = True 
+          | otherwise                    = checkFour rows
+
+checkFourRow :: [Char] -> Bool 
+checkFourRow [ _ , _ , _ ]             = False
+checkFourRow (p1:p2:p3:p4:t)
+             | p1 == p2 && p1 == p3 && p1 == p4  && p1 /= '-' = True 
+             | otherwise                                      = checkFourRow (p2:p3:p4:t)
 
 oneMoveHelper :: [[Char]] -> Char -> Int -> [[Char]]
 oneMoveHelper game player move = putPieceToGame game player row col
@@ -40,9 +49,11 @@ oneMoveHelper game player move = putPieceToGame game player row col
         
 manyMoveHelper :: [[Char]] -> Char -> [Int] -> [[Char]]
 manyMoveHelper game _ [] = game
-manyMoveHelper game player (move:moves) = manyMoveHelper newGame player moves 
-    where 
-        newGame         = oneMoveHelper game player (move - 1) 
+manyMoveHelper game player (move:moves) 
+              | checkFour game == True      = game 
+              | otherwise                   = manyMoveHelper newGame player moves 
+              where 
+                    newGame                 = oneMoveHelper game player move
 
 getRow :: [[Char]] -> Int -> [Char]
 getRow (row:rows) 0     = row 
