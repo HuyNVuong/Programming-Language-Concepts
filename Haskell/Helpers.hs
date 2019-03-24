@@ -42,6 +42,17 @@ checkFourRow (p1:p2:p3:p4:t)
              | p1 == p2 && p1 == p3 && p1 == p4  && p1 /= '-' = True 
              | otherwise                                      = checkFourRow (p2:p3:p4:t)
 
+checkFourDiag :: [[Char]] -> Bool 
+checkFourDiag (row:rows) 
+            | length rows < 3                   = False
+            | length row < 4                    = False
+            | checkFourRow diagToLeft == True   = True
+            | checkFourRow diagToRight == True  = True 
+            | otherwise                         = checkFourDiag rows 
+            where 
+                diagToLeft                      = getDiagToLeft (row:rows)
+                diagToRight                     = getDiagToRight (row:rows)
+
 oneMoveHelper :: [[Char]] -> Char -> Int -> [[Char]]
 oneMoveHelper game player move = putPieceToGame game player row col
     where 
@@ -77,13 +88,13 @@ manyPlayersHelper game _ [] = game
 manyPlayersHelper game player (move:moves) 
                 | checkFour game == True        = game 
                 | checkFour tGame == True       = game 
+                | checkFourDiag game == True    = game
                 | otherwise                     = manyPlayersHelper newGame nextPlayer moves 
                   where 
                       newGame                   = oneMoveHelper game player (move - 1)
                       tGame                     = transpose game
                       nextPlayer                = findNextPlayer player numPlayer
                       numPlayer                 = findNumPlayer game
-
 
 getRow :: [[Char]] -> Int -> [Char]
 getRow (row:rows) 0     = row 
@@ -115,6 +126,29 @@ getElement (el:els) n 	= getElement (els) (n - 1)
 getCol :: [[Char]] -> Int -> [Char] 
 getCol [row] col		= [(getElement row col)]
 getCol (row:rows) col 	= (getElement row col):(getCol rows col)
+
+getDiagToRight :: [[Char]] -> [Char]
+getDiagToRight (row:rows)
+	         | ((length row) >= 4) && (length (row:rows) >= 4) = ourDiag
+	         | otherwise	      	 	 	       	           = []
+             where 
+                   ourDiag  = first ++ secnd ++ third ++ frth 
+                   first    = [head row]
+                   secnd   = [head (tail (head rows))]
+                   third    = [head (drop 2 (head (drop 1 rows)))]
+                   frth     = [head (drop 3 (head (drop 2 rows)))]
+                   
+getDiagToLeft :: [[Char]] -> [Char] 
+getDiagToLeft (row:rows) 
+            | ((length row) >= 4) && (length (row:rows) >= 4) = ourDiag
+            | otherwise                                       = []
+            where
+                  ourDiag   = first ++ secnd ++ third ++ frth
+                  first     = [head (drop (n - 1) row)]
+                  secnd     = [head (drop (n - 2) (head rows))]
+                  third     = [head (drop (n - 3) (head (drop 1 rows)))]
+                  frth      = [head (drop (n - 4) (head (drop 2 rows)))]
+                  n         = length row 
 
 findNextPlayer :: Char -> Int -> Char
 findNextPlayer player numPlayer 
