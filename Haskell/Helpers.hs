@@ -42,13 +42,33 @@ checkFourRow (p1:p2:p3:p4:t)
              | p1 == p2 && p1 == p3 && p1 == p4  && p1 /= '-' = True 
              | otherwise                                      = checkFourRow (p2:p3:p4:t)
 
+checkFourDiagRight :: [[Char]] -> Bool 
+checkFourDiagRight rows 
+                 | length rows < 4               = False
+                 | length (head rows) < 4        = False
+                 | checkFourRow diag == True     = True 
+                 | otherwise                     = checkFourDiagRight newRows
+                 where 
+                         diag                    = getDiagToRight rows 
+                         newRows                 = dropFirstCol rows 
+        
+checkFourDiagLeft :: [[Char]] -> Bool 
+checkFourDiagLeft rows 
+                | length rows < 4               = False
+                | length (head rows) < 4        = False
+                | checkFourRow diag == True     = True 
+                | otherwise                     = checkFourDiagRight newRows
+                where
+                        diag                    = getDiagToLeft rows 
+                        newRows                 = dropLastCol rows
+
 checkFourDiag :: [[Char]] -> Bool 
 checkFourDiag (row:rows) 
-            | length rows < 3                   = False
-            | length row < 4                    = False
-            | checkFourRow diagToLeft == True   = True
-            | checkFourRow diagToRight == True  = True 
-            | otherwise                         = checkFourDiag rows 
+            | length rows < 3                       = False
+            | length row < 4                        = False
+            | checkFourDiagLeft (row:rows) == True  = True
+            | checkFourRow diagToRight == True      = True 
+            | otherwise                             = checkFourDiag rows 
             where 
                 diagToLeft                      = getDiagToLeft (row:rows)
                 diagToRight                     = getDiagToRight (row:rows)
@@ -134,7 +154,7 @@ getDiagToRight (row:rows)
              where 
                    ourDiag  = first ++ secnd ++ third ++ frth 
                    first    = [head row]
-                   secnd   = [head (tail (head rows))]
+                   secnd    = [head (tail (head rows))]
                    third    = [head (drop 2 (head (drop 1 rows)))]
                    frth     = [head (drop 3 (head (drop 2 rows)))]
                    
@@ -150,6 +170,17 @@ getDiagToLeft (row:rows)
                   frth      = [head (drop (n - 4) (head (drop 2 rows)))]
                   n         = length row 
 
+dropFirstCol :: [[Char]] -> [[Char]]
+dropFirstCol [] = []
+dropFirstCol (row:rows) = (tail row):(dropFirstCol rows)
+
+dropLastCol :: [[Char]] -> [[Char]] 
+dropLastCol [] = []
+dropLastCol (row:rows) = (newRow):(dropLastCol rows)
+        where 
+            newRow = delete (head (drop (n - 1) row)) row
+            n = length row 
+            
 findNextPlayer :: Char -> Int -> Char
 findNextPlayer player numPlayer 
              | (charToInt player) == numPlayer = '1' 
