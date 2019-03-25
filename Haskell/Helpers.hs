@@ -33,14 +33,14 @@ printGame (row:rows) = do
 checkFour :: [[Char]] -> Bool 
 checkFour [row]                          = checkFourRow row
 checkFour (row:rows)
-          | checkFourRow row == True     = True 
-          | otherwise                    = checkFour rows
+        | checkFourRow row == True     = True 
+        | otherwise                    = checkFour rows
 
 checkFourRow :: [Char] -> Bool 
 checkFourRow [ _ , _ , _ ]               = False
 checkFourRow (p1:p2:p3:p4:t)
-             | p1 == p2 && p1 == p3 && p1 == p4  && p1 /= '-' = True 
-             | otherwise                                      = checkFourRow (p2:p3:p4:t)
+           | p1 == p2 && p1 == p3 && p1 == p4  && p1 /= '-' = True 
+           | otherwise                                      = checkFourRow (p2:p3:p4:t)
 
 checkFourDiagRight :: [[Char]] -> Bool 
 checkFourDiagRight rows 
@@ -57,21 +57,18 @@ checkFourDiagLeft rows
                 | length rows < 4               = False
                 | length (head rows) < 4        = False
                 | checkFourRow diag == True     = True 
-                | otherwise                     = checkFourDiagRight newRows
+                | otherwise                     = checkFourDiagLeft newRows
                 where
                         diag                    = getDiagToLeft rows 
                         newRows                 = dropLastCol rows
 
 checkFourDiag :: [[Char]] -> Bool 
 checkFourDiag (row:rows) 
-            | length rows < 3                       = False
+            | length (row:rows) < 4                 = False
             | length row < 4                        = False
             | checkFourDiagLeft (row:rows) == True  = True
-            | checkFourRow diagToRight == True      = True 
+            | checkFourDiagRight (row:rows) == True = True
             | otherwise                             = checkFourDiag rows 
-            where 
-                diagToLeft                      = getDiagToLeft (row:rows)
-                diagToRight                     = getDiagToRight (row:rows)
 
 oneMoveHelper :: [[Char]] -> Char -> Int -> [[Char]]
 oneMoveHelper game player move = putPieceToGame game player row col
@@ -83,12 +80,13 @@ oneMoveHelper game player move = putPieceToGame game player row col
 manyMoveHelper :: [[Char]] -> Char -> [Int] -> [[Char]]
 manyMoveHelper game _ [] = game
 manyMoveHelper game player (move:moves) 
-              | checkFour game == True      = game 
-              | checkFour tGame == True     = game 
-              | otherwise                   = manyMoveHelper newGame player moves 
-                where 
-                    newGame                 = oneMoveHelper game player (move - 1)
-                    tGame                   = transpose game
+             | checkFour game == True      = game 
+             | checkFour tGame == True     = game 
+             | checkFourDiag game == True  = game
+             | otherwise                   = manyMoveHelper newGame player moves 
+               where 
+                   newGame                 = oneMoveHelper game player (move - 1)
+                   tGame                   = transpose game
 
 manyPlayersOneMoveHelper :: [[Char]] -> Char -> [Int] -> [[Char]]
 manyPlayersOneMoveHelper game _ [] = game 
@@ -178,8 +176,14 @@ dropLastCol :: [[Char]] -> [[Char]]
 dropLastCol [] = []
 dropLastCol (row:rows) = (newRow):(dropLastCol rows)
         where 
-            newRow = delete (head (drop (n - 1) row)) row
-            n = length row 
+            newRow = popAt n row
+            n = (length row) - 1 
+
+popAt :: Int -> [Char] -> [Char]
+popAt _ []     = []
+popAt i (x:xs)
+    | i == 0    = xs
+    | otherwise = x:(popAt (i-1) xs)
             
 findNextPlayer :: Char -> Int -> Char
 findNextPlayer player numPlayer 
