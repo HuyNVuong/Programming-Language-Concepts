@@ -1,3 +1,5 @@
 *.o
 *.hi
+sample_code
+javascript/template*
 *.cnf

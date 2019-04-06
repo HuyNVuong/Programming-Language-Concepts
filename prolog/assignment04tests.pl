@@ -9,27 +9,27 @@ loadHelpers:-
     ['csce322assignment04part02'],
     ['csce322assignment04part03'],
     ['csce322assignment04part04'].
-    
+
 part01:-
-    readConnectFourFile('part01test01.cnf',Moves,Game),
+    readConnectFourFile('test01.cnf',Moves,Game),
     writeln(moves),
     writeln(Moves),
     printGame(Game),
     columnsAndMoves(Game,Moves).
-    
+
 part02:-
-    readConnectFourFile('part01test01.cnf',_,Game),
+    readConnectFourFile('test01.cnf',_,Game),
     printGame(Game),
     occupiedSpaces(Game).
-    
+
 part03:-
-    readConnectFourFile('part01test01.cnf',_,Game),
+    readConnectFourFile('test01.cnf',_,Game),
     printGame(Game),
     setof(Moves,fewestMoves(Game,Moves),AllMoves),
     writeln(moves),
     printSequences(AllMoves).
-    
+
 part04:-
-    readConnectFourFile('part01test01.cnf',_,Game),
+    readConnectFourFile('test01.cnf',_,Game),
     printGame(Game),
     notDiagonal(Game).
