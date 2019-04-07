@@ -4,6 +4,7 @@
 	 , count/3
 	 , gameToList/2
 	 , row/3
+	 , at/4
 	 ]
     ).
 
@@ -35,11 +36,13 @@ printRows([Row|Rows]):-
     writeln(Row),
     printRows(Rows).
 
-row(M,N, Row) :-
+row(M, N, Row) :-
     nth1(N, M, Row).
 
 count(_, [], 0).
-count(Piece, [Head|Tail], N):-	Piece \= Head, count(Piece, Tail, N).
+count(Piece, [Head|Tail], N):-
+	Piece \= Head,
+	count(Piece, Tail, N).
 count(Piece, [Piece|Tail], NP1):-
 	count(Piece, Tail, N),
 	NP1 is N + 1.
@@ -48,5 +51,7 @@ gameToList([Row], Row).
 gameToList([Head|Tail], NewList):-
 	gameToList(Tail, List),
 	append(Head, List, NewList).
-% Helpers function
-% length(List,Length)
+
+at(Game, Y, X, Val):-
+	row(Game, Y, Row),
+	nthl(X, Row, Val).
