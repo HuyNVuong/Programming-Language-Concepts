@@ -5,6 +5,7 @@
 	 , gameToList/2
 	 , row/3
 	 , at/4
+	 , findPlayer/4
 	 ]
     ).
 
@@ -52,6 +53,14 @@ gameToList([Head|Tail], NewList):-
 	gameToList(Tail, List),
 	append(Head, List, NewList).
 
+findPlayer(Game, Player, Y, X):-
+    nth1(1, Game, Row),
+    length(Row, LengthOfRow),
+    gameToList(Game, List),
+    nth0(N, List, Player),
+    Y is floor(div(N, LengthOfRow)),
+    X is mod(N, LengthOfRow).
+
 at(Game, Y, X, Val):-
-	row(Game, Y, Row),
-	nthl(X, Row, Val).
+	nth1(Y, Game, Row),
+	nth1(X, Row, Val).

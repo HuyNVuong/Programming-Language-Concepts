@@ -2,19 +2,11 @@ fewestMoves(Game,[-1,-1]):-
     nth1(1, Game, Row),
     length(Row, NumCols),
     length(Game, NumRows),
-    findPlayerOne(Game, Y, X),
+    findPlayer(Game, 1, Y, X),
     writeln(Y),
     writeln(X),
     writeln(NumCols),
     writeln(NumRows).
-
-findPlayerOne(Game, Y, X):-
-    nth1(1, Game, Row),
-    length(Row, LengthOfRow),
-    gameToList(Game, List),
-    nth0(N, List, 1),
-    Y is floor(div(N, LengthOfRow)),
-    X is mod(N, LengthOfRow).
 
 getFourRow([A,B,C,D|_], Row):-
     Row = [A,B,C,D].
