@@ -8,19 +8,18 @@ fewestMoves(Game,[-1,-1]):-
     writeln(NumCols),
     writeln(NumRows).
 
-getFourRow([A,B,C,D|_], Row):-
-    Row = [A,B,C,D].
+% findRowForWinner(Game):-
+%     Game is [Row|Rows],
+%     checkFour(Row)
+checkFourRow([_,_,_]):- false.
 
-checkFour([P1,P2,P3,P4]):-
-    P1 = 1, P2 = 1, P3 = 1, P4 = 1.
-
-checkPossibleWin([1,P2,P3,P4]):-
-    (P2 = 1; P2 = -),
-    (P3 = 1; P3 = -),
-    (P4 = 1; P4 = -)
+checkFourRow([A,B,C,D|_]):-
+    % (length(Row, NumCols),
+    % NumCols >= 4,
+    % Row is [A,B,C,D|_],
+    (A = 1,
+    (B = 1; B = -),
+    (C = 1; C = -),
+    (D = 1; D = -));
+    checkFourRow([B,C,D|_])
     .
-
-at([Head|_], Head, 0).
-at([_|Tail], Piece, N):-
-    at(Tail, Piece, NP1),
-    NP1 is N + 1.
