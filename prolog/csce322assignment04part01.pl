@@ -1,5 +1,4 @@
 columnsAndMoves(Game,Moves):-
-    % findall(+Template, +Goal, -List)
     row(Game, 1, Row),
     length(Row, NumOfCols),
     length(Moves, NumOfMoves),

@@ -58,8 +58,8 @@ findPlayer(Game, Player, Y, X):-
     length(Row, LengthOfRow),
     gameToList(Game, List),
     nth0(N, List, Player),
-    Y is floor(div(N, LengthOfRow)),
-    X is mod(N, LengthOfRow).
+    Y is (floor(div(N, LengthOfRow)) + 1),
+    X is (mod(N, LengthOfRow) + 1).
 
 at(Game, Y, X, Val):-
 	nth1(Y, Game, Row),
