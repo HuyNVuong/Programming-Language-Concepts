@@ -51,15 +51,16 @@ count(Piece, [Piece|Tail], NP1):-
 gameToList([Row], Row).
 gameToList([Head|Tail], NewList):-
 	gameToList(Tail, List),
-	append(Head, List, NewList).
+	append(Head, List, NewList)
+	.
 
 findPlayer(Game, Player, Y, X):-
     nth1(1, Game, Row),
     length(Row, LengthOfRow),
     gameToList(Game, List),
     nth0(N, List, Player),
-    Y is floor(div(N, LengthOfRow)),
-    X is mod(N, LengthOfRow).
+    Y is (floor(div(N, LengthOfRow)) + 1),
+    X is (mod(N, LengthOfRow) + 1).
 
 at(Game, Y, X, Val):-
 	nth1(Y, Game, Row),
