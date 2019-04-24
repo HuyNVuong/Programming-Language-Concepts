@@ -11,14 +11,23 @@ getShortestLength([(Length,Move)|_], (Length, Move)).
 findAllMovesWithLength(Game, MovesWithLength):-
     setof((Length, Moves),
           (findAllMoves(Game, Moves), length(Moves, Length)),
-          (MovesWithLength)).
+          (MovesWithLength));
+    MovesWithLength is 4.
 
 findAllMoves(Game, Moves):-
     findPlayer(Game, 1, Row, Col),
     (
         pathToWinCol(Game, Row, Col, Moves);
-        pathToWinRow(Game, Row, Col, Moves)
+        pathToWinRow(Game, Row, Col, Moves);
+        preProgramCol(Game, Moves)
     )
+    .
+
+preProgramCol(Game, Moves):-
+    nth1(1, Game, Row),
+    length(Row, NumCols),
+    between(1, NumCols, P),
+    Moves = [P,P,P,P]
     .
 
 pathToWinCol(Game, Row, Col, Moves):-
@@ -67,6 +76,11 @@ pathToWinRowHelper(Row, ColFrom, ColTo, Game, NewMoves):-
     ColFromP1 is ColFrom + 1,
     (
         (at(Game, Row, ColFrom, -),
+        RowP1 is Row + 1, at(Game, RowP1, ColFrom, -),
+        pathToWinRowHelper(Row, ColFromP1, ColTo, Game, Moves),
+        append([ColFrom, ColFrom], Moves, NewMoves));
+        (at(Game, Row, ColFrom, -),
+        RowP1 is Row + 1, not(at(Game, RowP1, ColFrom, -)),
         pathToWinRowHelper(Row, ColFromP1, ColTo, Game, Moves),
         append([ColFrom], Moves, NewMoves));
         (at(Game, Row, ColFrom, 1),
