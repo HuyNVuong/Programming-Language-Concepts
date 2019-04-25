@@ -6,6 +6,7 @@
 	 , row/3
 	 , at/4
 	 , findPlayer/4
+	 , columnAt/3
 	 ]
     ).
 
@@ -61,6 +62,16 @@ findPlayer(Game, Player, Y, X):-
     nth0(N, List, Player),
     Y is (floor(div(N, LengthOfRow)) + 1),
     X is (mod(N, LengthOfRow) + 1).
+
+rowAt([H|_], 1, H):-!.
+rowAt([_|T], I, P):-
+	IM1 is I - 1,
+	rowAt(T, IM1, P).
+
+columnAt([], _, []).
+columnAt([H|T], I, [R|P]):-
+	rowAt(H, I, R),
+	columnAt(T, I, P).
 
 at(Game, Y, X, Val):-
 	nth1(Y, Game, Row),

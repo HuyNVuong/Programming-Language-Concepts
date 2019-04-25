@@ -61,6 +61,9 @@ preProgramCol(Game, Moves):-
     nth1(1, Game, Row),
     length(Row, NumCols),
     between(1, NumCols, P),
+    columnAt(Game, P, Col),
+    count(-, Col, ES),
+    ES >= 4,
     Moves = [P,P,P,P]
     .
 
@@ -185,6 +188,9 @@ pathToWinCol(Game, Row, Col, Moves):-
 pathToWinColHelper(Col, RowTo, RowTo, _, [Col]).
 
 pathToWinColHelper(Col, RowFrom, RowTo, Game, NewMoves):-
+    columnAt(Game, Col, ColToPlay),
+    count(-, ColToPlay, ES),
+    ES >= 3,
     RowFrom >= RowTo,
     RowFromM1 is RowFrom - 1,
     (
