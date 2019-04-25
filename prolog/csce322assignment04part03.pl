@@ -1,9 +1,38 @@
 fewestMoves(Game, Moves):-
+    (
+    not(fewestMoves1(Game, Moves))
+    -> (not(fewestMoves2(Game, Moves))
+        -> (not(fewestMoves3(Game, Moves))
+            -> fewestMoves4(Game, Moves)
+             ; fewestMoves3(Game, Moves))
+         ; fewestMoves2(Game, Moves))
+     ; fewestMoves1(Game, Moves)
+    )
+
+    .
+
+fewestMoves1(Game, Moves):-
     findAllMoves(Game, Moves),
-    findAllMovesWithLength(Game, MovesWithLength),
-    getShortestLength(MovesWithLength, (ShortestLength, _)),
     length(Moves, MovesLength),
-    MovesLength = ShortestLength
+    MovesLength = 1
+    .
+
+fewestMoves2(Game, Moves):-
+    findAllMoves(Game, Moves),
+    length(Moves, MovesLength),
+    MovesLength = 2
+    .
+
+fewestMoves3(Game, Moves):-
+    findAllMoves(Game, Moves),
+    length(Moves, MovesLength),
+    MovesLength = 3
+    .
+
+fewestMoves4(Game, Moves):-
+    findAllMoves(Game, Moves),
+    length(Moves, MovesLength),
+    MovesLength = 4
     .
 
 getShortestLength([(Length,Move)|_], (Length, Move)).
@@ -18,8 +47,8 @@ findAllMoves(Game, Moves):-
     findPlayer(Game, 1, Row, Col),
     (
         pathToWinCol(Game, Row, Col, Moves);
-        pathToWinRow(Game, Row, Col, Moves)
-        % pathToWinDiag(Game, Row, Col, Moves)
+        pathToWinRow(Game, Row, Col, Moves);
+        pathToWinDiag(Game, Row, Col, Moves)
     )
     .
 
@@ -71,7 +100,16 @@ pathToWinDiag(Game, Row, Col, AllMoves):-
 pathToWinDiagLeft(Game, ColTo, RowTo, ColTo, RowTo, [ColTo, ColTo]):-
     at(Game, RowTo, ColTo, -),
     RowP1 is RowTo + 1,
-    at(Game, RowP1, ColTo, -).
+    at(Game, RowP1, ColTo, -),
+    RowP2 is RowTo + 2,
+    at(Game, RowP2, ColTo, -).
+
+pathToWinDiagLeft(Game, ColTo, RowTo, ColTo, RowTo, [ColTo, ColTo]):-
+    at(Game, RowTo, ColTo, -),
+    RowP1 is RowTo + 1,
+    at(Game, RowP1, ColTo, -),
+    RowP2 is RowTo + 2,
+    not(at(Game, RowP2, ColTo, -)).
 
 pathToWinDiagLeft(Game, ColTo, RowTo, ColTo, RowTo, [ColTo]):-
     at(Game, RowTo, ColTo, -),
@@ -98,10 +136,20 @@ pathToWinDiagLeft(Game, ColFrom, RowFrom, ColTo, RowTo, NewMoves):-
     )
     .
 
+pathToWinDiagRight(Game, ColTo, RowTo, ColTo, RowTo, [ColTo, ColTo, ColTo]):-
+    at(Game, RowTo, ColTo, -),
+    RowP1 is RowTo + 1,
+    at(Game, RowP1, ColTo, -),
+    RowP2 is RowTo + 2,
+    at(Game, RowP2, ColTo, -)
+    .
+
 pathToWinDiagRight(Game, ColTo, RowTo, ColTo, RowTo, [ColTo, ColTo]):-
     at(Game, RowTo, ColTo, -),
     RowP1 is RowTo + 1,
-    at(Game, RowP1, ColTo, -)
+    at(Game, RowP1, ColTo, -),
+    RowP2 is RowTo + 2,
+    not(at(Game, RowP2, ColTo, -))
     .
 
 pathToWinDiagRight(Game, ColTo, RowTo, ColTo, RowTo, [ColTo]):-
