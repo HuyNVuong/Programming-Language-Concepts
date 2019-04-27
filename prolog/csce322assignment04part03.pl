@@ -100,7 +100,7 @@ pathToWinDiag(Game, Row, Col, AllMoves):-
     pathToWinDiagRight(Game, ColFromRight, RowFrom, ColToRight, RowTo, Moves)),
     permutation(Moves, AllMoves).
 
-pathToWinDiagLeft(Game, ColTo, RowTo, ColTo, RowTo, [ColTo, ColTo]):-
+pathToWinDiagLeft(Game, ColTo, RowTo, ColTo, RowTo, [ColTo, ColTo, ColTo]):-
     at(Game, RowTo, ColTo, -),
     RowP1 is RowTo + 1,
     at(Game, RowP1, ColTo, -),
@@ -185,7 +185,7 @@ pathToWinCol(Game, Row, Col, Moves):-
     RowTo is Row - 3,
     pathToWinColHelper(Col, RowFrom, RowTo, Game, Moves).
 
-pathToWinColHelper(Col, RowTo, RowTo, _, [Col]).
+pathToWinColHelper(Col, RowTo, RowTo, Game, [Col]):- at(Game, RowTo, Col, -).
 
 pathToWinColHelper(Col, RowFrom, RowTo, Game, NewMoves):-
     columnAt(Game, Col, ColToPlay),
